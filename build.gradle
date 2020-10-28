@@ -1,0 +1,68 @@
+import sun.misc.Cleaner
+
+buildscript {
+    ext {
+        springBootVersion = '2.3.4.RELEASE'
+    }
+    repositories{
+        mavenCentral()
+        maven {
+            url = "http://maven.aliyun.com/nexus/content/groups/public/"
+        }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'war'
+}
+
+
+task cleanSui(type: Delete) {
+    File file = file('src')
+    File[] tempList = file.listFiles()
+    println "所有文件夹" + tempList
+
+    delete rootProject.buildDir
+}
+
+
+sourceSets{
+    main{
+        java {
+            srcDirs("src/main")
+            srcDirs("src/one")
+
+            sourceSets.all{set ->
+                println "${set.name}的文件是 ${set.java.srcDirs}"
+
+                if(name == "main"){
+                    Set myt = java.srcDirs;
+                    println myt + "--------------------"
+                    myt.each {
+                        if(it.name != "mtone"){
+                            exclude 'com/example/kylin/fristtest/MyTestOne.java'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url = "http://maven.aliyun.com/nexus/content/groups/public/"
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
